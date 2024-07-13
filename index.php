@@ -1,4 +1,7 @@
 <?php 
+include 'configuration/database.php';
+$db = new Database();
+
 // Variable declaration
 $fullname = $nickname = $fname = $mname = $dob = $email = $phone = $address = $about = $gender = $sscyear = $sscboard = $sscresult = $schoolname = $collegename = $hscyear = $hscboard = $hscresult = '';
 $fullnameErr = $tableErr = $nicknameErr = $fnameErr = $mnameErr = $dobErr = $emailErr = $phoneErr = $addressErr = $genderErr = $sscyearErr = $sscboardErr = $sscresultErr = $schoolnameErr = $collegenameErr = $hscyearErr = $hscboardErr = $hscresultErr = '';
@@ -45,7 +48,7 @@ if(isset($_POST['submit'])){
     $address = $_POST['address'];
   }
   if(empty($_POST['about'])){
-    
+    $about = '';
   }else{
     $about = $_POST['about'];
   }
@@ -63,6 +66,31 @@ if(isset($_POST['submit'])){
     $sscyear = $_POST['sscyear'];
     $sscboard = $_POST['sscboard'];
     $sscresult = $_POST['sscresult'];
+  }
+
+  // Add conditions for schoolname and collegename
+  if(empty($_POST['schoolname'])){
+    $schoolnameErr = "School name is required";
+  }else{
+    $schoolname = $_POST['schoolname'];
+  }
+
+  if(empty($_POST['collegename'])){
+    $collegenameErr = "College name is required";
+  }else{
+    $collegename = $_POST['collegename'];
+  }
+
+  if($fullnameErr || $nicknameErr || $fnameErr || $mnameErr || $emailErr || $phoneErr || $dobErr || $genderErr || $tableErr ){
+    echo "<script>alert('Please fill up all the required fields');</script>";
+  } else{
+    $queryForInsertingData ="INSERT INTO registration (fullname, nickname, fathername, mothername, address, phone, email, dateofbirth, gender, about, schoolname, sscyear, sscboard, sscresult, collegename, hscyear, hscboard, hscresult) VALUES ('$fullname','$nickname','$fname','$mname','$address','$phone','$email','$dob','$gender','$about','$schoolname','$sscyear','$sscboard','$sscresult','$collegename','$hscyear','$hscboard','$hscresult')";
+    $result = $db->insert($queryForInsertingData);
+    if($result){
+      echo "<script>alert('Form submitted succesfully');</script>";
+    }else{
+      echo "Process Failed try again";
+    }
   }
 }
 ?>
@@ -153,15 +181,13 @@ if(isset($_POST['submit'])){
               <select name="sscboard" id="boards">
                 <option value="dhaka" <?php if ($sscboard == 'dhaka') echo 'selected'; ?>>Dhaka Board</option>
                 <option value="rajshahi" <?php if ($sscboard == 'rajshahi') echo 'selected'; ?>>Rajshahi Board</option>
-                <option value="chittagong" <?php if ($sscboard == 'chittagong') echo 'selected'; ?>>Chattogram Board</option>
-                <option value="dinajpur" <?php if ($sscboard == 'dinajpur') echo 'selected'; ?>>Dinajpur Board</option>
-                <option value="jashore" <?php if ($sscboard == 'jashore') echo 'selected'; ?>>Jashore Board</option>
+                <option value="chittagong" <?php if ($sscboard == 'chittagong') echo 'selected'; ?>>Chittagong Board</option>
                 <option value="barishal" <?php if ($sscboard == 'barishal') echo 'selected'; ?>>Barishal Board</option>
-                <option value="mymensingh" <?php if ($sscboard == 'mymensingh') echo 'selected'; ?>>Mymensingh Board</option>
                 <option value="sylhet" <?php if ($sscboard == 'sylhet') echo 'selected'; ?>>Sylhet Board</option>
+                <option value="dinajpur" <?php if ($sscboard == 'dinajpur') echo 'selected'; ?>>Dinajpur Board</option>
               </select>
             </td>
-            <td><input type="number" name="sscresult" placeholder="Out of 5" value="<?php echo htmlspecialchars($sscresult); ?>" min="0" max="5"></td>
+            <td><input type="text" name="sscresult" placeholder="Enter your SSC GPA" value="<?php echo htmlspecialchars($sscresult); ?>"></td>
           </tr>
           <tr>
             <td>HSC(12th)</td>
@@ -171,23 +197,19 @@ if(isset($_POST['submit'])){
               <select name="hscboard" id="boards">
                 <option value="dhaka" <?php if ($hscboard == 'dhaka') echo 'selected'; ?>>Dhaka Board</option>
                 <option value="rajshahi" <?php if ($hscboard == 'rajshahi') echo 'selected'; ?>>Rajshahi Board</option>
-                <option value="chittagong" <?php if ($hscboard == 'chittagong') echo 'selected'; ?>>Chattogram Board</option>
-                <option value="dinajpur" <?php if ($hscboard == 'dinajpur') echo 'selected'; ?>>Dinajpur Board</option>
-                <option value="jashore" <?php if ($hscboard == 'jashore') echo 'selected'; ?>>Jashore Board</option>
+                <option value="chittagong" <?php if ($hscboard == 'chittagong') echo 'selected'; ?>>Chittagong Board</option>
                 <option value="barishal" <?php if ($hscboard == 'barishal') echo 'selected'; ?>>Barishal Board</option>
-                <option value="mymensingh" <?php if ($hscboard == 'mymensingh') echo 'selected'; ?>>Mymensingh Board</option>
                 <option value="sylhet" <?php if ($hscboard == 'sylhet') echo 'selected'; ?>>Sylhet Board</option>
+                <option value="dinajpur" <?php if ($hscboard == 'dinajpur') echo 'selected'; ?>>Dinajpur Board</option>
               </select>
             </td>
-            <td><input type="number" name="hscresult" placeholder="Out of 5" value="<?php echo htmlspecialchars($hscresult); ?>" min="0" max="5"></td>
+            <td><input type="text" name="hscresult" placeholder="Enter your HSC GPA" value="<?php echo htmlspecialchars($hscresult); ?>"></td>
           </tr>
         </tbody>
       </table>
-      <small class="text-danger"><?php echo $tableErr; ?></small>
-      <div class="form-group">
-        <button type="submit" name="submit" class="btn btn-primary">Submit</button>
-      </div>
+      <button type="submit" name="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>
+
 </body>
 </html>
