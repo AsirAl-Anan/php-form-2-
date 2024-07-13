@@ -66,7 +66,7 @@ if(isset($_POST['submit'])){
   }
 }
 ?>
-
+<!-- HTML starting -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
